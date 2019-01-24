@@ -6,7 +6,8 @@ public class movement : MonoBehaviour {
 
     public CharacterController controller;
 
-    public float moveSpeed = 3f;
+    public float moveSpeedX = 3;
+    public float moveSpeedY = 2;
     public float velX, velY;
     bool facingRight = true;
     Rigidbody2D rigBod;
@@ -18,16 +19,29 @@ public class movement : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void FixedUpdate () {
         velX = Input.GetAxisRaw("Horizontal");
         velY = rigBod.velocity.y;
-        rigBod.velocity = new Vector2(velX * moveSpeed, velY);
 
+        if (Physics2D.Raycast(transform.position, -transform.up, 0.53f))
+        {
+            Debug.Log(rigBod.velocity.y);
+            velY = Input.GetAxisRaw("Vertical") * moveSpeedY;
+        }
+
+        rigBod.velocity = new Vector2(velX * moveSpeedX, velY);
+
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawRay(transform.position, -transform.up);
     }
 
     // sprite flipping 
     private void LateUpdate()
     {
+
         Vector3 localScale = transform.localScale;
         if (velX > 0)
         {
